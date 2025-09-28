@@ -26,4 +26,25 @@ print(3*4)
 print("3"*4)
 print("Hello"*50)
 
+# Exponentiation / Exponential / Exponent / Expo:			   
+# ~Used to calculate power value
+# syntax:
+# value  **  powerValue
+print(3**2)
+
+# Bitwise operators :​
+
+# & (binary and)​
+
+# | (binary or)​
+
+# ^ (binary xor)​
+
+# ~ (negation)​
+
+# << (left shift)​
+
+# >> (right shift)
+
+
 
