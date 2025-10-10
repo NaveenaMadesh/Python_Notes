@@ -1,0 +1,190 @@
+
+'''class Test:
+    pass
+print(Test.__bases__)
+
+class Test1(Test):
+    pass
+print(Test1.__bases__)
+
+print(Test1.__mro__)'''
+
+'''why parent cant inherit from child'''
+
+# [Soldier Class - 0x1000]
+#   ├── shoot()
+#   └── __bases__ → (object,)  ← Points to object, NOT to Sniper!
+
+# [Sniper Class - 0x2000]
+#   ├── long_range_shoot()
+#   └── __bases__ → (Soldier,)  ← Points to 0x1000 (parent)
+
+# [soldier object - 0x3000]
+#   └── __class__ → 0x1000 (Soldier)
+
+# When you call: soldier.long_range_shoot()
+#   1. Check object (0x3000) → No long_range_shoot()
+#   2. Check Soldier class (0x1000) → No long_range_shoot()
+#   3. Check Soldier's __bases__ → Points to 'object' → No long_range_shoot()
+#   4. ❌ AttributeError! Not found!
+
+
+# Parent defines COMMON attributes/methods
+# Child inherits by: class Child(Parent):
+# Child's __init__ MUST call super().__init__() (pass parent's params)
+# Initialize child's unique attributes AFTER super()
+# Child can ADD new methods
+# Child can OVERRIDE parent's methods
+# Use super().method() to call parent's version
+
+
+
+class Animal:
+     def __init__(self,name,age):
+         self.name =name
+         self.age =age
+    
+     def eat(self):
+         print(f"{self.name} is eating")
+
+     def sleep(self):
+         print(f"{self.name} is sleeping") 
+
+class Dog(Animal):
+    def __init__(self,name,age,breed):
+        super().__init__(name,age)
+        self.breed = breed
+
+    def  eat(self):
+        super().eat()
+        print("Dog love bones")
+
+    def bark(self):
+        print("Woof! Woof!")
+
+
+dog = Dog("Buudy",3, "Golden Retriever")
+print(dog.__dict__)
+print(Dog.__dict__.keys())
+print(Animal.__dict__.keys())
+
+
+
+# ============================================
+# SINGLE INHERITANCE (Simple)
+# ============================================
+class Parent:
+    def __init__(self, x):
+        self.x = x
+
+class Child(Parent):
+    def __init__(self, x, y):
+        super().__init__(x)
+        self.y = y
+
+# # ============================================
+# # MULTIPLE INHERITANCE (Complex)
+# # ============================================
+# class Parent1:
+#     def __init__(self, a, **kwargs):
+#         super().__init__(**kwargs)
+#         self.a = a
+
+# class Parent2:
+#     def __init__(self, b, **kwargs):
+#         super().__init__(**kwargs)
+#         self.b = b
+
+# class Child(Parent1, Parent2):
+#     def __init__(self, a, b, c):
+#         super().__init__(a=a, b=b)
+#         self.c = c
+
+# # ============================================
+# # CHECKING MRO (Always do this first!)
+# # ============================================
+# print(Child.__mro__)
+
+# # ============================================
+# # METHOD OVERRIDE (Any inheritance type)
+# # ============================================
+# class Child(Parent):
+#     def method(self):
+#         result = super().method()  # Get parent's result
+#         # Modify or extend
+#         return result
+
+
+# class Father:
+#     def __init__(self, father_trait, **kwargs):
+#         super().__init__(**kwargs)  # Pass remaining kwargs up MRO
+#         self.father_trait = father_trait
+#         print(f"Father: {father_trait}")
+
+# class Mother:
+#     def __init__(self, mother_trait, **kwargs):
+#         super().__init__(**kwargs)  # Pass remaining kwargs up MRO
+#         self.mother_trait = mother_trait
+#         print(f"Mother: {mother_trait}")
+
+# class Child(Father, Mother):
+#     def __init__(self, father_trait, mother_trait, child_trait):
+#         super().__init__(
+#             father_trait=father_trait,
+#             mother_trait=mother_trait
+#         )
+#         self.child_trait = child_trait
+#         print(f"Child: {child_trait}")
+
+# c = Child("coding", "design", "gaming")
+
+
+'''call stack'''
+# CALL STACK (Memory):
+
+# Step 1: d.method() called
+# ├─ D.method() pushed to stack
+#    └─ Calls super().method()
+
+# Step 2: super() finds B in MRO
+# ├─ D.method() (waiting...)
+# └─ B.method() pushed to stack
+#    └─ Calls super().method()
+
+# Step 3: super() finds C in MRO
+# ├─ D.method() (waiting...)
+# ├─ B.method() (waiting...)
+# └─ C.method() pushed to stack
+#    └─ Calls super().method()
+
+# Step 4: super() finds A in MRO
+# ├─ D.method() (waiting...)
+# ├─ B.method() (waiting...)
+# ├─ C.method() (waiting...)
+# └─ A.method() pushed to stack
+#    └─ print("A") ✅
+#    └─ RETURNS (no more super!)
+
+# Step 5: Stack unwinds
+# ├─ D.method() (waiting...)
+# ├─ B.method() (waiting...)
+# └─ C.method() resumes
+#    └─ print("C") ✅
+#    └─ RETURNS
+
+# Step 6: Stack unwinds
+# ├─ D.method() (waiting...)
+# └─ B.method() resumes
+#    └─ print("B") ✅
+#    └─ RETURNS
+
+# Step 7: Stack unwinds
+# └─ D.method() resumes
+#    └─ print("D") ✅
+#    └─ RETURNS
+
+# Result: A C B D
+
+
+# we can also use 
+'''super(B,self).m1()'''
